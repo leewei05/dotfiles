@@ -1,6 +1,12 @@
 " Comments in Vimscript start with a `"`.
-
+"
 " If you open this file in Vim, it'll be syntax highlighted for you.
+" Python3
+let g:pymode_python = 'python3'
+
+" Popup menu up down keys
+inoremap <expr> <S-j> pumvisible() ? "\<C-n>" : "\<S-j>"
+inoremap <expr> <S-k> pumvisible() ? "\<C-p>" : "\<S-k>"
 
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
@@ -11,14 +17,25 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'preservim/nerdtree'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
+Plug 'ycm-core/YouCompleteMe'
+Plug 'rakr/vim-one'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+
+" Color scheme
+set termguicolors
+colorscheme one
+set background=dark
+
+" Popup menu color
+" :highlight Pmenu ctermbg=blue guibg=blue
 
 " NERDtree setup
 " Automatic turn on NERDtree when executing vim command
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" let NERDTreeShowHidden=1
 
 " Map :NERDTree command to ctrl-c
 nmap <C-n> :NERDTreeToggle<CR>
@@ -35,7 +52,7 @@ let g:go_highlight_fields = 1
 let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
-:inoremap <C-b> <C-x><C-o>
+" au filetype go inoremap <buffer> . .<C-x><C-o>
 
 " Vim is based on Vi. Setting `nocompatible` switches from the default
 " Vi-compatibility mode and enables useful Vim functionality. This
@@ -51,7 +68,8 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
 " Set tab spaces
-set tabstop=2
+set tabstop=4
+set shiftwidth=2
 
 " Turn on syntax highlighting.
 syntax on
