@@ -29,6 +29,9 @@ set termguicolors
 colorscheme one
 set background=dark
 
+" Terminal Split
+set splitbelow
+
 " Popup menu color
 " :highlight Pmenu ctermbg=blue guibg=blue
 
