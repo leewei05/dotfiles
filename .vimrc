@@ -5,10 +5,6 @@
 let g:pymode_python = 'python3'
 let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
 
-" Popup menu up down keys
-inoremap <expr> <S-j> pumvisible() ? "\<C-n>" : "\<S-j>"
-inoremap <expr> <S-k> pumvisible() ? "\<C-p>" : "\<S-k>"
-
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
 
