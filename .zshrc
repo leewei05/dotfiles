@@ -1,14 +1,48 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/lee/.oh-my-zsh"
+export ZSH="/Users/leewei/.oh-my-zsh"
+export GOPATH="/Users/leewei/go"
 
+export PATH=$HOME/bin:/usr/local/bin:$PATH:$GOPATH/bin
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell"
+#source "/usr/local/Cellar/kube-ps1/0.7.0/share/kube-ps1.sh"
+#PS1='$(kube_ps1)'$PS1
+# alias pip=pip3
+
+export TERM=xterm-256color
+
+macdown() {
+    "$(mdfind kMDItemCFBundleIdentifier=com.uranusjr.macdown | head -n1)/Contents/SharedSupport/bin/macdown" $@
+}
+
+function sdev (){
+gcloud beta compute ssh --zone "asia-east1-a" "ondemand-service-g1w7" --project "media17-dev"
+}
+
+function vh (){
+open https://vim.rtorr.com/
+}
+
+function vgo (){
+open https://github.com/fatih/vim-go-tutorial
+}
+
+lg (){
+git log --graph --oneline --all
+}
+
+source $GOPATH/src/github.com/17media/api/env.sh
+
+# bind cursor key
+
+bindkey "[D" backward-word
+bindkey "[C" forward-word
+bindkey "^[a" beginning-of-line
+bindkey "^[e" end-of-line
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -68,7 +102,9 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git)
+plugins=(zsh-autosuggestions)
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -79,11 +115,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+ if [[ -n $SSH_CONNECTION ]]; then
+   export EDITOR='vim'
+ else
+   export EDITOR='mvim'
+ fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -96,18 +132,32 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
-lg (){
-git log --graph --oneline --all
-}
-
-aa (){
-git add .
-git commit -m "$*"
-}
+export PATH="/usr/local/opt/go@1.13/bin:$PATH"
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/lee/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/lee/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/leewei/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/leewei/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/lee/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/lee/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/Users/leewei/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/leewei/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+function get_cluster_short() {
+  echo "$1" | cut -d _ -f4 
+}
+
+function get_namespace_upper() {
+  echo "$1" # | tr '[:lower:]' '[:upper:]'
+}
+
+export KUBE_PS1_NAMESPACE_FUNCTION=get_namespace_upper
+KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+
+# kubectl promp
+source "/usr/local/Cellar/kube-ps1/0.7.0/share/kube-ps1.sh"
+PS1=$PS1'> $(kube_ps1)'
+NEWLINE=$'\n''$ '
+PS1=$PS1${NEWLINE}
+
+KUBE_PS1_SEPARATOR=''
+KUBE_PS1_SYMBOL_DEFAULT=''
+KUBE_PS1_SYMBOL_COLOR='cyan'
+KUBE_PS1_CTX_COLOR='green'
