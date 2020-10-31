@@ -5,6 +5,10 @@
 let g:pymode_python = 'python3'
 let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
 
+" Popup menu up down keys
+inoremap <expr> <S-j> pumvisible() ? "\<C-n>" : "\<S-j>"
+inoremap <expr> <S-k> pumvisible() ? "\<C-p>" : "\<S-k>"
+
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
 
@@ -22,8 +26,7 @@ call plug#end()
 
 " Color scheme
 set termguicolors
-colorscheme one
-set background=dark
+colorscheme spacegray
 
 " Terminal Split
 set splitbelow
@@ -37,7 +40,7 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 " let NERDTreeShowHidden=1
 
-" Map :NERDTree command to ctrl-c
+" Map :NERDTree command to ctrl-n
 nmap <C-n> :NERDTreeToggle<CR>
 
 " Golang CMD config
