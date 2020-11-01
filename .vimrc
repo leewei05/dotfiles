@@ -31,6 +31,9 @@ colorscheme spacegray
 " Terminal Split
 set splitbelow
 
+" CtrlP
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+
 " Popup menu color
 " :highlight Pmenu ctermbg=blue guibg=blue
 
