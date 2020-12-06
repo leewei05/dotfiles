@@ -5,9 +5,7 @@
 let g:pymode_python = 'python3'
 let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
 
-" Popup menu up down keys
-inoremap <expr> <S-j> pumvisible() ? "\<C-n>" : "\<S-j>"
-inoremap <expr> <S-k> pumvisible() ? "\<C-p>" : "\<S-k>"
+nnoremap <Leader>s :<C-u>call gitblame#echo()<CR>
 
 " Plugins will be downloaded under the specified directory.
 call plug#begin('~/.vim/plugged')
@@ -20,9 +18,21 @@ Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'ycm-core/YouCompleteMe'
 Plug 'rakr/vim-one'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'Yggdroot/indentLine'
+Plug 'google/vim-jsonnet'
+Plug 'dense-analysis/ale'
+Plug 'zivyangll/git-blame.vim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+
+" Indent
+let g:indentLine_enabled = 1
+let g:indentLine_setConceal = 0
+let g:indentLine_setColors = 0
+let g:indentLine_char = '⦙'
 
 " Color scheme
 set termguicolors
@@ -74,7 +84,7 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
 " Set tab spaces
-set tabstop=4
+set tabstop=2
 set shiftwidth=2
 
 " Turn on syntax highlighting.
@@ -144,3 +154,20 @@ inoremap <Left>  <ESC>:echoe "Use h"<CR>
 inoremap <Right> <ESC>:echoe "Use l"<CR>
 inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
+
+au BufNewFile,BufRead Jenkinsfile.* setf groovy
+
+" Indent
+let g:indentLine_enabled = 1
+let g:indentLine_setConceal = 0
+let g:indentLine_setColors = 0
+let g:indentLine_char = '⦙'
+
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
+set foldlevelstart=20
+
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_on_text_changed = 'never'
