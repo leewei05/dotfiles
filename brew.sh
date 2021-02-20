@@ -11,7 +11,14 @@ brew upgrade
 # Save Homebrew’s installed location.
 BREW_PREFIX=$(brew --prefix)
 
-brew install git
-brew install vim
-brew install httping
-brew install tmux
+# Install packeges
+# Development packages
+brew install git vim
+
+# Go
+brew install go@1.14 gotags ctags-exuberant
+
+# Networking Tools
+brew install httping htop
+
+

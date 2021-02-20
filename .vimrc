@@ -24,6 +24,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'google/vim-jsonnet'
 Plug 'dense-analysis/ale'
 Plug 'zivyangll/git-blame.vim'
+Plug 'majutsushi/tagbar'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -33,6 +34,12 @@ let g:indentLine_enabled = 1
 let g:indentLine_setConceal = 0
 let g:indentLine_setColors = 0
 let g:indentLine_char = '⦙'
+
+" Set cursor
+"set cursorline
+"set cursorcolumn
+"highlight CursorLine ctermbg=234
+"highlight CursorColumn ctermbg=234
 
 " Color scheme
 set termguicolors
@@ -44,8 +51,19 @@ set splitbelow
 " CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
-" Popup menu color
-" :highlight Pmenu ctermbg=blue guibg=blue
+" Set to use spaces
+set tabstop     =2
+set softtabstop =2
+set shiftwidth  =2
+set expandtab
+
+function! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 " NERDtree setup
 " Automatic turn on NERDtree when executing vim command
@@ -57,7 +75,6 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 nmap <C-n> :NERDTreeToggle<CR>
 
 " Golang CMD config
-
 let g:go_fmt_command = "goimports"
 let g:go_info_mode = 'gopls'
 let g:go_auto_type_info = 1
@@ -68,24 +85,42 @@ let g:go_highlight_fields = 1
 let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+
+let g:tagbar_type_go = {
+	\ 'ctagstype' : 'go',
+	\ 'kinds'     : [
+		\ 'p:package',
+		\ 'i:imports:1',
+		\ 'c:constants',
+		\ 'v:variables',
+		\ 't:types',
+		\ 'n:interfaces',
+		\ 'w:fields',
+		\ 'e:embedded',
+		\ 'm:methods',
+		\ 'r:constructor',
+		\ 'f:functions'
+	\ ],
+	\ 'sro' : '.',
+	\ 'kind2scope' : {
+		\ 't' : 'ctype',
+		\ 'n' : 'ntype'
+	\ },
+	\ 'scope2kind' : {
+		\ 'ctype' : 't',
+		\ 'ntype' : 'n'
+	\ },
+	\ 'ctagsbin'  : 'gotags',
+	\ 'ctagsargs' : '-sort -silent'
+\ }
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_use_universal_ctags = 1
+let g:Tlist_Ctags_Cmd='/usr/local/Cellar/ctags/5.8_1/bin/ctags'
 " au filetype go inoremap <buffer> . .<C-x><C-o>
 
-" Vim is based on Vi. Setting `nocompatible` switches from the default
-" Vi-compatibility mode and enables useful Vim functionality. This
-" configuration option turns out not to be necessary for the file named
-" '~/.vimrc', because Vim automatically enters nocompatible mode if that file
-" is present. But we're including it here just in case this config file is
-" loaded some other way (e.g. saved as `foo`, and then Vim started with
-" `vim -u foo`).
 set nocompatible
-" Ctrl-P
-
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
-
-" Set tab spaces
-set tabstop=2
-set shiftwidth=2
 
 " Turn on syntax highlighting.
 syntax on
@@ -97,11 +132,6 @@ set shortmess+=I
 set number
 
 " This enables relative line numbering mode. With both number and
-" relativenumber enabled, the current line shows the true line number, while
-" all other lines (above and below) are numbered relative to the current line.
-" This is useful because you can tell, at a glance, what count is needed to
-" jump up or down to a particular line, by {count}k to go up or {count}j to go
-" down.
 set relativenumber
 
 " Always show the status line at the bottom, even if you only have one window open.
@@ -171,3 +201,4 @@ let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_sign_error = '✘'
 let g:ale_sign_warning = '⚠'
 let g:ale_lint_on_text_changed = 'never'
+
