@@ -24,3 +24,5 @@ git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
 }
 
 export TERM=xterm-256color
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
