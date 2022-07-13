@@ -1,8 +1,11 @@
-# If you come from bash you might have to change your $PATH.
+#########################
+# Environment variables #
+#########################
 export PATH=$HOME/bin:/usr/local/bin:/Users/lee/go/bin:$PATH
-
-# Path to your oh-my-zsh installation.
 export ZSH="/Users/lee/.oh-my-zsh"
+export TERM=xterm-256color
+
+alias vim=nvim
 
 ZSH_THEME="robbyrussell"
 
@@ -22,7 +25,5 @@ git commit -m "$*"
 pb (){
 git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
 }
-
-export TERM=xterm-256color
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

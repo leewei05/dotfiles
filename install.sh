@@ -48,6 +48,13 @@ setup_fzf() {
 		fi
 }
 
+setup_fish() {
+    title "Installing fish"
+
+		git clone https://github.com/fish-shell/fish-shell.git ~/.local/share/fish-shell
+		cd ~/.local/share/fish-shell; cmake .; make; sudo make install
+}
+
 case "$1" in
     link)
         setup_symlinks
@@ -55,5 +62,6 @@ case "$1" in
 		all)
 				setup_symlinks
 				setup_fzf
+				setup_fish
 				;;
 esac
