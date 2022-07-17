@@ -190,6 +190,7 @@ setup_dep () {
                 wget \
                 curl \
                 python3 \
+		tig \
                 -y
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
             ;;
@@ -197,7 +198,9 @@ setup_dep () {
             brew install fd \
                 wget \
                 curl \
-                python3
+                python3 \
+		tig
+
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
             ;;
     esac
@@ -219,8 +222,8 @@ case "$1" in
     dep)
         setup_dep
         ;;
-	all)
-		setup_symlinks			
+    all)
+	setup_symlinks
         setup_fzf	
         setup_fish
         setup_nvim
