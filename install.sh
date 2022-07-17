@@ -118,15 +118,36 @@ setup_fish() {
 
     info "Install fish shell"
 	if ! type "fish" > /dev/null; then
-		wget https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz 
+        case "$OS" in
+        Linux)
+            sudo apt-add-repository ppa:fish-shell/release-3
+            sudo apt-get update && sudo apt-get upgrade
+            sudo apt-get install fish
+            ;;
+        Darwin)
+            brew install fish
+            ;;
+    esac
     fi
-	
-	#git clone https://github.com/fish-shell/fish-shell.git ~/.local/share/fish-shell
-	#cd ~/.local/share/fish-shell; cmake .; make; sudo make install
 
     info "Set up fish as default shell"
     echo /usr/local/bin/fish | sudo tee -a /etc/shells
     chsh -s /usr/local/bin/fish
+
+    #info "Install fisher, fish plugin manager"
+    #curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+
+    info "Create fish dir"
+    mkdir -p $HOME/.config/fish
+    config_file="$(fd -a config.fish .config -t file)"
+    target="$HOME/.config/fish/$(basename "$config_file")"
+
+    if [ -e "$target" ]; then
+        info "~${target#$HOME} already exists... Skipping."
+    else
+        info "Creating symlink for $config_file"
+        ln -s "$config_file" "$target"
+    fi
 }
 
 setup_nvim() {
@@ -152,7 +173,7 @@ setup_nvim() {
         git clone --depth=1 git@github.com:leewei05/nvim-config.git $NVIM
     else
         info "Config already exists... Skipping."
-    fi 
+    fi
 
     info "Install vim-plug"
     sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
