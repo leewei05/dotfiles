@@ -72,12 +72,17 @@ setup_fzf() {
 setup_fish() {
     title "Installing fish"
 
-	if ! type "$foobar_command_name" > /dev/null; then
+    info "Install fish shell"
+	if ! type "fish" > /dev/null; then
 		wget https://github.com/fish-shell/fish-shell/releases/download/3.5.0/fish-3.5.0.tar.xz 
     fi
 	
-	git clone https://github.com/fish-shell/fish-shell.git ~/.local/share/fish-shell
-	cd ~/.local/share/fish-shell; cmake .; make; sudo make install
+	#git clone https://github.com/fish-shell/fish-shell.git ~/.local/share/fish-shell
+	#cd ~/.local/share/fish-shell; cmake .; make; sudo make install
+
+    info "Set up fish as default shell"
+    echo /usr/local/bin/fish | sudo tee -a /etc/shells
+    chsh -s /usr/local/bin/fish
 }
 
 setup_nvim() {
@@ -113,6 +118,18 @@ setup_nvim() {
     done
 }
 
+setup_misc () {
+    title "Install miscellaneous tools"
+    case "$OS" in
+        Linux)
+            sudo apt-get install fd-find
+            ;;
+        Darwin)
+            brew install fd
+            ;;
+    esac
+}
+
 case "$1" in
     link)
         setup_symlinks
@@ -120,10 +137,20 @@ case "$1" in
     nvim)
         setup_nvim
         ;;
+    shell)
+        setup_fish
+        ;;
+    misc)
+        setup_misc
+        ;;
 	all)
 		setup_symlinks			
         setup_fzf	
         setup_fish
         setup_nvim
 		;;
+    *)
+        echo -e $"\nUsage: $(basename "$0") {link|nvim|shell|misc|all}\n"
+        exit 1
+        ;;
 esac
