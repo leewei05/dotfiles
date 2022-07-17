@@ -1,1 +1,1 @@
-set PATH /usr/local/bin /usr/sbin $HOME/bin $PATH
+set PATH /usr/local/bin /usr/sbin $HOME/bin $HOME/.cargo/bin $PATH

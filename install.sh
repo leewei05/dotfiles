@@ -11,6 +11,10 @@ COLOR_NONE="\033[0m"
 OS="`uname`"
 NVIM=$HOME/.config/nvim
 
+# dep
+# shell
+
+
 info() {
     echo -e "${COLOR_BLUE}Info: ${COLOR_NONE}$1"
 }
@@ -43,6 +47,46 @@ setup_symlinks() {
     done
 }
 
+setup_editor() {
+    title "Setup Editor"
+
+    info "Check alacritty"
+    case "$OS" in
+        Linux)
+            # TODO
+            ;;
+        Darwin)
+            if open -Ra "alacritty" ; then
+                info "Alacritty already exists... Skipping."
+            else
+                info "Install alacritty"
+                if [ ! -d ~/tmp/alacritty ]; then
+                    git clone https://github.com/alacritty/alacritty.git ~/tmp/alacritty
+                    cd ~/tmp/alacritty
+                    rustup override set stable
+                    rustup update stable
+                    make app
+                    cp -r target/release/osx/Alacritty.app /Applications/
+                    info "Clean up alacritty repository"
+                    rm -rf ~/tmp/alacritty
+                fi
+            fi
+            ;;
+    esac
+
+    info "Create alacritty dir"
+    mkdir -p $HOME/.config/alacritty
+    config_file="$(fd -a alacritty.yml .config -t file)"
+    target="$HOME/.config/alacritty/$(basename "$config_file")"
+
+    if [ -e "$target" ]; then
+        info "~${target#$HOME} already exists... Skipping."
+    else
+        info "Creating symlink for $config_file"
+        ln -s "$config_file" "$target"
+    fi
+}
+
 setup_git() {
     title "Installing and setting up git"
 
@@ -62,7 +106,7 @@ setup_fzf() {
     title "Installing fzf"
 
 	if [ -d "$HOME/.fzf" ]; then
-		info "fzf exists, skipping installation"
+		info "fzf already exists... Skipping."
 	else
 	    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 	    ~/.fzf/install --completion --update-rc --key-bindings
@@ -88,44 +132,52 @@ setup_fish() {
 setup_nvim() {
     title "Install neovim"
 
-    info "Install vim-plug"
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-
-    info "Install neovim on $OS"
-    case "$OS" in
+    if ! command -v nvim &> /dev/null; then 
+        info "Install neovim on $OS"
+        case "$OS" in
         Linux)
             sudo apt-get install neovim
             ;;
         Darwin)
             brew install neovim
             ;;
-    esac
+        esac
+    else
+        info "Neovim already exists... Skipping."
+    fi     
 
-    info "Creating $NVIM"
-    mkdir -p $NVIM
+    if [ ! -f ~/.config/nvim/init.vim ]; then
+        info "Creating $NVIM"
+        mkdir -p $NVIM
+        git clone --depth=1 git@github.com:leewei05/nvim-config.git $NVIM
+    else
+        info "Config already exists... Skipping."
+    fi 
 
-    info "Creating symlinks"
-    for file in $(get_nvim_configs) ; do
-		echo "$file"
-        target="$NVIM/$(basename "$file")"
-        if [ -e "$target" ]; then
-            info "~${target#$NVIM} already exists... Skipping."
-        else
-            info "Creating symlink for $file"
-            ln -s "$file" "$target"
-        fi
-    done
+    info "Install vim-plug"
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    nvim -c 'PlugInstall' -c 'qa'
 }
 
-setup_misc () {
+setup_dep () {
     title "Install miscellaneous tools"
     case "$OS" in
         Linux)
+            sudo apt update
             sudo apt-get install fd-find
+                wget \
+                curl \
+                python3 \
+                -y
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
             ;;
         Darwin)
-            brew install fd
+            brew install fd \
+                wget \
+                curl \
+                python3
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
             ;;
     esac
 }
@@ -140,8 +192,11 @@ case "$1" in
     shell)
         setup_fish
         ;;
-    misc)
-        setup_misc
+    editor)
+        setup_editor
+        ;;
+    dep)
+        setup_dep
         ;;
 	all)
 		setup_symlinks			
@@ -150,7 +205,7 @@ case "$1" in
         setup_nvim
 		;;
     *)
-        echo -e $"\nUsage: $(basename "$0") {link|nvim|shell|misc|all}\n"
+        echo -e $"\nUsage: $(basename "$0") {link|nvim|shell|dep|all}\n"
         exit 1
         ;;
 esac
