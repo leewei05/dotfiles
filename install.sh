@@ -29,7 +29,7 @@ get_linkables() {
 }
 
 get_nvim_configs() {
-    find "$PWD/.config/nvim" -maxdepth 1 -type f 
+    find "$PWD/.config/nvim" -maxdepth 1 -type f
 }
 
 setup_symlinks() {
@@ -134,8 +134,9 @@ setup_fish() {
     echo /usr/local/bin/fish | sudo tee -a /etc/shells
     chsh -s /usr/local/bin/fish
 
-    #info "Install fisher, fish plugin manager"
-    #curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+    # This can only run in fish shell
+    info "Install fisher, fish plugin manager"
+    curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
 
     info "Create fish dir"
     mkdir -p $HOME/.config/fish
@@ -153,7 +154,7 @@ setup_fish() {
 setup_nvim() {
     title "Install neovim"
 
-    if ! command -v nvim &> /dev/null; then 
+    if ! command -v nvim &> /dev/null; then
         info "Install neovim on $OS"
         case "$OS" in
         Linux)
@@ -165,7 +166,7 @@ setup_nvim() {
         esac
     else
         info "Neovim already exists... Skipping."
-    fi     
+    fi
 
     if [ ! -f ~/.config/nvim/init.vim ]; then
         info "Creating $NVIM"
@@ -191,6 +192,7 @@ setup_dep () {
                 curl \
                 python3 \
 		tig \
+		bat \
                 -y
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
             ;;
@@ -199,9 +201,12 @@ setup_dep () {
                 wget \
                 curl \
                 python3 \
-		tig
+		tig \
+		bat
 
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	    if ! type "rustup" > /dev/null; then
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	    fi
             ;;
     esac
 }
@@ -224,7 +229,7 @@ case "$1" in
         ;;
     all)
 	setup_symlinks
-        setup_fzf	
+        setup_fzf
         setup_fish
         setup_nvim
 		;;
