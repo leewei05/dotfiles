@@ -140,15 +140,19 @@ setup_fish() {
 
     info "Create fish dir"
     mkdir -p $HOME/.config/fish
-    config_file="$(fd -a config.fish .config -t file)"
-    target="$HOME/.config/fish/$(basename "$config_file")"
+    source_files="$(fd -a . .config/fish -t file)"
 
-    if [ -e "$target" ]; then
-        info "~${target#$HOME} already exists... Skipping."
-    else
-        info "Creating symlink for $config_file"
-        ln -s "$config_file" "$target"
-    fi
+    for file in $source_files; do
+	info "$file"
+	target="$HOME/.config/fish/$(basename "$file")"
+	if [ -e "$target" ]; then
+	    info "~${target#$HOME} already exists... Skipping."
+	else
+	    info "Creating symlink for $file"
+	    ln -s "$file" "$target"
+	fi
+    done
+
 }
 
 setup_nvim() {
