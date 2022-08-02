@@ -8,3 +8,6 @@ TODO
 - fisher plugin manager, fzf
 - change alacritty theme
 - read fzf.vim
+- init.vim
+	- https://github.com/jdhao/nvim-config/tree/master
+	- https://github.com/Optixal/neovim-init.vim/blob/master/init.vim
