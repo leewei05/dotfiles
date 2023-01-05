@@ -14,7 +14,6 @@ NVIM=$HOME/.config/nvim
 # dep
 # shell
 
-
 info() {
     echo -e "${COLOR_BLUE}Info: ${COLOR_NONE}$1"
 }
@@ -25,7 +24,7 @@ title() {
 }
 
 get_linkables() {
-	find "$PWD" -maxdepth 1 -type f -not -name "*.sh"
+  find "$PWD" -maxdepth 1 -type f -not -name "*.sh"
 }
 
 get_nvim_configs() {
@@ -35,8 +34,8 @@ get_nvim_configs() {
 setup_symlinks() {
     title "Creating symlinks"
 
-	for file in $(get_linkables) ; do
-		echo "$file"
+  for file in $(get_linkables) ; do
+    echo "$file"
         target="$HOME/$(basename "$file")"
         if [ -e "$target" ]; then
             info "~${target#$HOME} already exists... Skipping."
@@ -105,19 +104,19 @@ setup_git() {
 setup_fzf() {
     title "Installing fzf"
 
-	if [ -d "$HOME/.fzf" ]; then
-		info "fzf already exists... Skipping."
-	else
-	    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-	    ~/.fzf/install --completion --update-rc --key-bindings
-	fi
+  if [ -d "$HOME/.fzf" ]; then
+    info "fzf already exists... Skipping."
+  else
+      git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+      ~/.fzf/install --completion --update-rc --key-bindings
+  fi
 }
 
 setup_fish() {
     title "Installing fish"
 
     info "Install fish shell"
-	if ! type "fish" > /dev/null; then
+  if ! type "fish" > /dev/null; then
         case "$OS" in
         Linux)
             sudo apt-add-repository ppa:fish-shell/release-3
@@ -143,14 +142,14 @@ setup_fish() {
     source_files="$(fd -a . .config/fish -t file)"
 
     for file in $source_files; do
-	info "$file"
-	target="$HOME/.config/fish/$(basename "$file")"
-	if [ -e "$target" ]; then
-	    info "~${target#$HOME} already exists... Skipping."
-	else
-	    info "Creating symlink for $file"
-	    ln -s "$file" "$target"
-	fi
+  info "$file"
+  target="$HOME/.config/fish/$(basename "$file")"
+  if [ -e "$target" ]; then
+      info "~${target#$HOME} already exists... Skipping."
+  else
+      info "Creating symlink for $file"
+      ln -s "$file" "$target"
+  fi
     done
 
 }
@@ -195,8 +194,8 @@ setup_dep () {
                 wget \
                 curl \
                 python3 \
-		tig \
-		bat \
+    tig \
+    bat \
                 -y
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
             ;;
@@ -205,12 +204,12 @@ setup_dep () {
                 wget \
                 curl \
                 python3 \
-		tig \
-		bat
+    tig \
+    bat
 
-	    if ! type "rustup" > /dev/null; then
-		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-	    fi
+      if ! type "rustup" > /dev/null; then
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+      fi
             ;;
     esac
 }
@@ -232,11 +231,11 @@ case "$1" in
         setup_dep
         ;;
     all)
-	setup_symlinks
+  setup_symlinks
         setup_fzf
         setup_fish
         setup_nvim
-		;;
+    ;;
     *)
         echo -e $"\nUsage: $(basename "$0") {link|nvim|shell|dep|all}\n"
         exit 1
